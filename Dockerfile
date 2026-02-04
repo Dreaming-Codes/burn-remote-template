@@ -210,8 +210,8 @@ cargo run --release --features cuda
 EOF
 RUN chmod +x /workspace/start-burn-server.sh
 
-# Create a supervisor config for burn-server (optional auto-start)
-COPY <<'EOF' /etc/supervisor/conf.d/burn-server.conf.disabled
+# Create a supervisor config for burn-server (auto-start enabled)
+COPY <<'EOF' /etc/supervisor/conf.d/burn-server.conf
 [program:burn-server]
 command=/workspace/burn-server/target/release/burn-server
 directory=/workspace/burn-server
@@ -242,22 +242,18 @@ This environment is configured for GPU-accelerated Burn development with CUDA.
 
 ## Services (Auto-started)
 
+- **Burn Remote Server**: Auto-starts on port 3000
+  - Connect via WebSocket: ws://your-server-ip:3000
 - **Jupyter Notebook**: Auto-starts on port 8888 (no password)
   - Access at: http://localhost:8888
   - Rust kernel available via evcxr
 
 ## Quick Start
 
-### Start the Burn Remote Backend Server
+### Manual Start (if needed)
 ```bash
 ./start-burn-server.sh [port]
 # Default port: 3000
-```
-
-Or enable auto-start:
-```bash
-mv /etc/supervisor/conf.d/burn-server.conf.disabled /etc/supervisor/conf.d/burn-server.conf
-supervisorctl reload
 ```
 
 ### Connect from a Remote Client
