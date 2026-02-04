@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  burn-remote:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: burn-remote-server
+    ports:
+      - "3000:3000"   # Burn Remote Backend Server
+      - "8888:8888"   # Jupyter Notebook
+    volumes:
+      # Persist workspace data (includes sccache at /workspace/.sccache)
+      - ./workspace:/workspace
+      # Alternatively, mount sccache separately for sharing across containers
+      # - sccache-cache:/workspace/.sccache
+    environment:
+      - REMOTE_BACKEND_PORT=3000
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+      # sccache settings (inherited from Dockerfile, can override here)
+      - SCCACHE_DIR=/workspace/.sccache
+      - SCCACHE_CACHE_SIZE=10G
+      - RUSTC_WRAPPER=sccache
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+
+  # Optional: Run burn-server as a separate service
+  burn-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: burn-server
+    ports:
+      - "3001:3000"
+    volumes:
+      # Share sccache with main container
+      - ./workspace/.sccache:/workspace/.sccache
+    environment:
+      - REMOTE_BACKEND_PORT=3000
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+      - SCCACHE_DIR=/workspace/.sccache
+      - RUSTC_WRAPPER=sccache
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    command: ["/workspace/start-burn-server.sh"]
+    restart: unless-stopped
+    profiles:
+      - server-only
+
+volumes:
+  sccache-cache:

@@ -1,0 +1,8 @@
+[package]
+name = "remote-client"
+version = "0.1.0"
+edition = "2021"
+description = "Example client for connecting to Burn Remote Backend Server"
+
+[dependencies]
+burn = { version = "0.20", features = ["remote"] }
