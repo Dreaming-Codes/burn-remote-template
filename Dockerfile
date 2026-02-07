@@ -52,7 +52,7 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y \
 RUN curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
 
 # Install tools via binstall (prebuilt binaries, no compilation)
-RUN cargo binstall -y --locked sccache
+RUN cargo binstall -y --locked sccache just
 
 # Now enable sccache as the rustc wrapper for all subsequent builds
 ENV RUSTC_WRAPPER=sccache
