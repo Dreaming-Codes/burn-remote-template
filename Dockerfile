@@ -38,9 +38,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     btop \
     # Clean up
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* \
-    # Install zellij terminal multiplexer
-    && curl -L https://github.com/zellij-org/zellij/releases/latest/download/zellij-x86_64-unknown-linux-musl.tar.gz | tar -xz -C /usr/local/bin
+    && rm -rf /var/lib/apt/lists/*
 
 # Install Rust toolchain
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y \
@@ -52,7 +50,7 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y \
 RUN curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
 
 # Install tools via binstall (prebuilt binaries, no compilation)
-RUN cargo binstall -y --locked sccache just
+RUN cargo binstall -y --locked sccache just zellij
 
 # Now enable sccache as the rustc wrapper for all subsequent builds
 ENV RUSTC_WRAPPER=sccache
