@@ -48,8 +48,11 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y \
     --profile default \
     && rustup component add rust-src rustfmt clippy rust-analyzer
 
-# Install sccache for shared compilation cache
-RUN cargo install sccache --locked
+# Install cargo-binstall for fast prebuilt binary installs
+RUN curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
+
+# Install tools via binstall (prebuilt binaries, no compilation)
+RUN cargo binstall -y --locked sccache
 
 # Now enable sccache as the rustc wrapper for all subsequent builds
 ENV RUSTC_WRAPPER=sccache
@@ -57,12 +60,10 @@ ENV RUSTC_WRAPPER=sccache
 # Create sccache directory with proper permissions
 RUN mkdir -p /workspace/.sccache && chmod 777 /workspace/.sccache
 
-# Install evcxr_jupyter for Rust Jupyter kernel (uses sccache)
-RUN cargo install --locked evcxr_jupyter \
+# Install evcxr_jupyter for Rust Jupyter kernel
+RUN cargo binstall -y --locked evcxr_jupyter \
     && evcxr_jupyter --install
 
-# Install additional useful Rust tools for development
-RUN cargo install cargo-watch cargo-expand
 
 # Create workspace directory
 WORKDIR /workspace
