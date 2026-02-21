@@ -207,7 +207,7 @@ COPY <<'EOF' /workspace/start-burn-server.sh
 export REMOTE_BACKEND_PORT=${1:-3000}
 echo "Starting Burn Remote Backend Server on port $REMOTE_BACKEND_PORT..."
 cd /workspace/burn-server
-cargo run --release --features wgpu
+cargo run --release --features cuda
 EOF
 RUN chmod +x /workspace/start-burn-server.sh
 
