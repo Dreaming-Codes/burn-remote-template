@@ -78,7 +78,7 @@ edition = "2021"
 description = "Burn Remote Backend Server with CUDA support"
 
 [features]
-default = ["wgpu"]
+default = ["cuda"]
 cuda = ["burn/cuda"]
 wgpu = ["burn/wgpu"]
 
@@ -140,7 +140,7 @@ EOF
 # Build the burn-server to cache dependencies (CUDA backend)
 # This also warms up sccache with burn dependencies
 WORKDIR /workspace/burn-server
-RUN cargo build --release --features wgpu && sccache --show-stats
+RUN cargo build --release --features cuda && sccache --show-stats
 
 # Create a sample Rust Jupyter notebook for Burn
 WORKDIR /workspace
