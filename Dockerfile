@@ -83,7 +83,7 @@ cuda = ["burn/cuda"]
 wgpu = ["burn/wgpu"]
 
 [dependencies]
-burn = { version = "0.20", features = ["server"] }
+burn = { version = "0.21.0-pre.1", features = ["server"] }
 cfg-if = "1.0"
 EOF
 
